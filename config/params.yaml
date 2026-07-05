@@ -1,0 +1,14 @@
+# SignWay tunable parameters (orchestration spec §12). Start here; calibrate empirically.
+# Loaded by signway_core.config.Params.load(). Values here override the dataclass defaults.
+
+tau_conf: 0.5          # min sign detection confidence to act (Phase 2)
+d_read: 3.5            # max distance (m) a sign is considered readable (Phase 2)
+d_arrive: 0.5          # subgoal-reached distance (m)
+d_look: 2.5            # subgoal look-ahead distance (m)
+t_stall: 3.0           # stall window (s)
+eps_progress: 0.2      # min displacement (m) over t_stall before 'stalled'
+leg_max_dist: 8.0      # max travel (m) before a leg auto-closes (Phase 2)
+reason_budget: 30      # max VLM calls per mission (Phase 2)
+occ_staleness_s: 0.5   # max occupancy age before 'hold'
+det_staleness_s: 0.3   # max detection age before 'hold'
+omni_range_m: 30.0     # clip relative goal to this (matches OmniVLA training)

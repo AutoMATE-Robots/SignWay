@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignNav · Trip Replay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0C0F14; --surface:#141A22; --surface-2:#1A212B; --border:#262F3C; --border-soft:#1E2630;
+    --text:#E6EDF3; --dim:#8B98A8; --faint:#5B6675;
+    --signal:#5CC8FF;   /* omni chunk */
+    --settled:#5BE3B3;  /* traveled path */
+    --danger:#FF6B6B;   /* goal */
+    --caution:#F2B45C;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+    --sans:'Inter',-apple-system,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;overflow:hidden;-webkit-font-smoothing:antialiased}
+  .hidden{display:none!important}
+  code{font-family:var(--mono);font-size:.92em;color:var(--dim)}
+
+  /* ---------- loader ---------- */
+  .loader{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px}
+  .loader h1{font-family:var(--mono);font-size:21px;letter-spacing:-.5px;font-weight:700}
+  .loader h1 b{color:var(--signal)}
+  .loader .tag{color:var(--faint);font-family:var(--mono);font-size:12px;letter-spacing:.5px;text-transform:uppercase;margin-top:-10px}
+  .drops{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+  .drop{width:290px;padding:28px;border:1.5px dashed var(--border);border-radius:14px;background:var(--surface);text-align:center;cursor:pointer;transition:.15s}
+  .drop:hover,.drop.hot{border-color:var(--signal);background:var(--surface-2)}
+  .drop .t{font-family:var(--mono);font-size:13px;margin-bottom:6px;font-weight:500}
+  .drop .s{color:var(--faint);font-size:12px;line-height:1.5}
+  .drop .ok{color:var(--settled);font-size:12px;margin-top:9px;font-family:var(--mono)}
+  .drop input{display:none}
+  .launch{margin-top:4px;padding:12px 30px;border:none;border-radius:9px;background:var(--signal);color:#04121c;font-weight:700;font-family:var(--mono);cursor:pointer;letter-spacing:.5px}
+  .launch:disabled{opacity:.35;cursor:not-allowed}
+  .note{color:var(--faint);font-size:12px;max-width:620px;text-align:center;line-height:1.6}
+
+  /* ---------- app ---------- */
+  .app{height:100vh;display:flex;flex-direction:column}
+  .hdr{display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--surface),var(--bg))}
+  .brand{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:-.3px}
+  .brand b{color:var(--signal)}
+  .chip{font-family:var(--mono);font-size:11px;color:var(--dim);padding:5px 11px;border:1px solid var(--border);border-radius:999px;background:var(--surface-2)}
+  .chip .k{color:var(--faint);text-transform:uppercase;letter-spacing:.8px;font-size:10px;margin-right:5px}
+  .chip .v{color:var(--text);font-weight:500}
+  .chip .v.dir{color:var(--signal)}
+  .spacer{flex:1}
+
+  .main{flex:1;display:grid;grid-template-columns:1.35fr 1fr 1.12fr;gap:1px;background:var(--border-soft);min-height:0}
+  .pane{background:var(--bg);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0;padding:10px}
+  .pane img{max-width:100%;max-height:100%;display:block;border-radius:4px}
+  .pane canvas{max-width:100%;max-height:100%;display:block}
+  .pane .cap{position:absolute;top:11px;left:14px;font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:1.2px;text-transform:uppercase;z-index:2}
+  .pane .ph{color:var(--faint);font-family:var(--mono);font-size:13px;text-align:center;line-height:1.7;padding:30px}
+
+  .legend{display:flex;gap:18px;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--dim);padding:9px 0;border-top:1px solid var(--border-soft);background:var(--surface)}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .legend i{width:15px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.star{width:11px;height:11px;border-radius:2px;transform:rotate(45deg)}
+
+  .foot{display:flex;align-items:center;gap:14px;padding:11px 20px;border-top:1px solid var(--border);background:var(--surface)}
+  .foot button{background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;cursor:pointer;font-family:var(--mono);font-size:13px;min-width:40px}
+  .foot button:hover{border-color:var(--signal)}
+  .scrub{flex:1;-webkit-appearance:none;height:6px;border-radius:3px;background:var(--border);outline:none}
+  .scrub::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--signal);cursor:pointer;box-shadow:0 0 8px rgba(92,200,255,.6)}
+  .spd{display:flex;gap:4px}
+  .spd button{min-width:44px;padding:7px 6px;font-size:12px}
+  .spd button.on{background:var(--signal);color:#04121c;border-color:var(--signal);font-weight:700}
+  .count{font-family:var(--mono);font-size:12px;color:var(--dim);min-width:82px;text-align:right}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <h1>SignNav · <b>Trip</b> Replay</h1>
+  <div class="tag">OmniVLA action chunks · goal-anchored</div>
+  <div class="drops">
+    <label class="drop" id="dropLog">
+      <div class="t">① drop the replay log</div>
+      <div class="s">the .jsonl from<br><code>odom_replay.py --log</code></div>
+      <div class="ok hidden" id="logOk"></div>
+      <input type="file" id="logInput" accept=".jsonl,.log,.txt,.json">
+    </label>
+    <label class="drop" id="dropFrames">
+      <div class="t">② drop the frames folder</div>
+      <div class="s">optional — the camera panel<br>(matched to the log by filename)</div>
+      <div class="ok hidden" id="framesOk"></div>
+      <input type="file" id="framesInput" webkitdirectory directory multiple>
+    </label>
+  </div>
+  <button class="launch" id="launchBtn" disabled>LAUNCH REPLAY</button>
+  <div class="note">Three panels: the camera, OmniVLA's action chunk in the robot frame with the
+    goal bearing, and a world map where the robot marker drives the recorded path toward the goal
+    pinned at the trip's end.</div>
+</div>
+
+<div class="app hidden" id="app">
+  <div class="hdr">
+    <div class="brand">SignNav · <b>Omni</b> Trip</div>
+    <div class="chip"><span class="k">goal</span><span class="v dir" id="goalTxt">—</span></div>
+    <div class="chip"><span class="k">forward</span><span class="v" id="fwdTxt">—</span></div>
+    <div class="spacer"></div>
+    <div class="chip" id="tsChip">—</div>
+  </div>
+
+  <div class="main">
+    <div class="pane" id="camPane"><div class="cap">camera</div><div class="ph" id="camPh">no frames loaded</div></div>
+    <div class="pane"><div class="cap">action grid · robot frame</div><canvas id="ag" width="520" height="560"></canvas></div>
+    <div class="pane"><div class="cap">world map</div><canvas id="wm" width="540" height="560"></canvas></div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:#5CC8FF"></i>OmniVLA chunk</span>
+    <span><i style="background:#FF6B6B"></i>goal bearing</span>
+    <span><i style="background:#5BE3B3"></i>path travelled</span>
+    <span><i style="background:#3A4557"></i>full route</span>
+    <span><i class="star" style="background:#FF6B6B"></i>goal (trip end)</span>
+  </div>
+
+  <div class="foot">
+    <button id="backBtn" title="prev (←)">◀</button>
+    <button id="playBtn" title="play/pause (space)">▶</button>
+    <button id="fwdBtn" title="next (→)">▶▐</button>
+    <input type="range" class="scrub" id="scrub" min="0" max="0" value="0">
+    <div class="spd" id="spd">
+      <button data-s="4">.25×</button><button data-s="2">.5×</button>
+      <button data-s="1" class="on">1×</button><button data-s="0.5">2×</button>
+    </div>
+    <div class="count" id="count">0 / 0</div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const S = { meta:null, recs:[], files:{}, cur:0, playing:false, speed:1, timer:null };
+
+/* action-grid fixed extents (robot frame) */
+const FMAX = 3.2, LHALF = 2.2;
+
+/* ---------- loaders ---------- */
+let logText=null;
+function wireDrop(drop, input, onFiles){
+  drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('hot');});
+  drop.addEventListener('dragleave',()=>drop.classList.remove('hot'));
+  drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('hot');
+    if(e.dataTransfer.files.length) onFiles(e.dataTransfer.files);});
+  input.addEventListener('change',()=>{ if(input.files.length) onFiles(input.files); });
+}
+wireDrop($('dropLog'),$('logInput'),files=>{
+  const f=files[0];
+  f.text().then(t=>{ logText=t; $('logOk').classList.remove('hidden');
+    $('logOk').textContent='✓ '+f.name; $('launchBtn').disabled=false; });
+});
+wireDrop($('dropFrames'),$('framesInput'),files=>{
+  S.files={}; let n=0;
+  for(const f of files){ if(/\.(png|jpe?g|bmp|webp)$/i.test(f.name)){ S.files[f.name]=f; n++; } }
+  $('framesOk').classList.remove('hidden');
+  $('framesOk').textContent = n? ('✓ '+n+' frames') : '⚠ no images found';
+});
+$('launchBtn').onclick=launch;
+
+function parseLog(text){
+  const recs=[]; let meta=null;
+  for(const line of text.split(/\r?\n/)){
+    const s=line.trim(); if(!s) continue;
+    let d; try{ d=JSON.parse(s); }catch(e){ continue; }
+    if(d.type==='meta') meta=d; else if('omni' in d) recs.push(d);
+  }
+  return {meta, recs};
+}
+
+function launch(){
+  const {meta,recs}=parseLog(logText);
+  if(!recs.length){ alert('No frame records found in the log.'); return; }
+  S.meta = meta || {};
+  if(!S.meta.grid) S.meta.grid={res:0.05,x_max:4,y_half:2};
+  S.recs = recs;
+  $('scrub').max = recs.length-1;
+  $('loader').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  S.cur=0; draw();
+}
+
+/* ============================================================
+   TRANSFORMS
+   ============================================================ */
+/* action grid: x forward -> up, +y left -> screen-left */
+function agTf(){ const cv=$('ag'), W=cv.width, H=cv.height;
+  return (x,y)=>[ (LHALF - y)/(2*LHALF)*W, H - (x/FMAX)*H ]; }
+
+/* world map: equal-aspect, y up, from meta.world_bounds */
+function wmTf(){
+  const cv=$('wm'), W=cv.width, H=cv.height, m=26;
+  const b=S.meta.world_bounds || [0,10,0,10];
+  const s=Math.min((W-2*m)/(b[1]-b[0]||1),(H-2*m)/(b[3]-b[2]||1));
+  const offx=m+((W-2*m)-s*(b[1]-b[0]))/2, offy=m+((H-2*m)-s*(b[3]-b[2]))/2;
+  return (wx,wy)=>[ offx+(wx-b[0])*s, H-(offy+(wy-b[2])*s) ];
+}
+function omniWorld(rec){
+  const [x,y,yaw]=rec.pose, c=Math.cos(yaw), s=Math.sin(yaw);
+  return rec.omni.map(([fx,fl])=>[x+fx*c-fl*s, y+fx*s+fl*c]);
+}
+
+/* ============================================================
+   DRAW HELPERS
+   ============================================================ */
+function polyline(ctx, pts, tf, color, w, dots){
+  if(!pts||!pts.length) return;
+  ctx.strokeStyle=color; ctx.lineWidth=w; ctx.lineJoin='round'; ctx.lineCap='round';
+  ctx.beginPath();
+  pts.forEach((p,i)=>{ const [px,py]=tf(p[0],p[1]); i?ctx.lineTo(px,py):ctx.moveTo(px,py); });
+  ctx.stroke();
+  if(dots){ ctx.fillStyle=color; for(const p of pts){ const [px,py]=tf(p[0],p[1]); ctx.beginPath();ctx.arc(px,py,2.6,0,7);ctx.fill(); } }
+}
+function arrow(ctx, from, to, color, w){
+  ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=w; ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(from[0],from[1]);ctx.lineTo(to[0],to[1]);ctx.stroke();
+  const a=Math.atan2(to[1]-from[1],to[0]-from[0]), h=11;
+  ctx.beginPath();ctx.moveTo(to[0],to[1]);
+  ctx.lineTo(to[0]-h*Math.cos(a-0.42),to[1]-h*Math.sin(a-0.42));
+  ctx.lineTo(to[0]-h*Math.cos(a+0.42),to[1]-h*Math.sin(a+0.42));
+  ctx.closePath();ctx.fill();
+}
+function robotTri(ctx, px, py, ang){ // ang in canvas radians (0 = +x screen), heading up = -PI/2
+  ctx.save(); ctx.translate(px,py); ctx.rotate(ang);
+  ctx.fillStyle='#E6EDF3';
+  ctx.beginPath();ctx.moveTo(11,0);ctx.lineTo(-7,7);ctx.lineTo(-7,-7);ctx.closePath();ctx.fill();
+  ctx.restore();
+}
+function star(ctx, px, py, r, color){
+  ctx.save(); ctx.fillStyle=color; ctx.shadowColor=color; ctx.shadowBlur=14;
+  ctx.beginPath();
+  for(let i=0;i<10;i++){ const rad=i%2?r*0.45:r; const a=-Math.PI/2 + i*Math.PI/5;
+    const x=px+rad*Math.cos(a), y=py+rad*Math.sin(a); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.closePath();ctx.fill(); ctx.restore();
+}
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+function drawActionGrid(rec){
+  const cv=$('ag'), ctx=cv.getContext('2d'), W=cv.width, H=cv.height, tf=agTf();
+  ctx.clearRect(0,0,W,H);
+  // grid: forward rings every 1 m + centre line
+  ctx.strokeStyle='#141B23'; ctx.lineWidth=1; ctx.fillStyle='#3A4557'; ctx.font='10px '+"'JetBrains Mono',monospace";
+  for(let mm=1;mm<=Math.floor(FMAX);mm++){ const [,py]=tf(mm,0); ctx.beginPath();ctx.moveTo(0,py);ctx.lineTo(W,py);ctx.stroke();
+    ctx.fillText(mm+'m', 6, py-4); }
+  const [cx0]=tf(0,0); ctx.strokeStyle='#182029'; ctx.beginPath();ctx.moveTo(cx0,0);ctx.lineTo(cx0,H);ctx.stroke();
+  // goal bearing (normalized, capped to grid)
+  if(rec.goal_robot){
+    const [gf,gl]=rec.goal_robot, n=Math.hypot(gf,gl)||1, L=FMAX*0.74;
+    arrow(ctx, tf(0,0), tf(gf/n*L, gl/n*L), '#FF6B6B', 2.6);
+  }
+  // omni chunk (drawn from origin)
+  polyline(ctx, [[0,0]].concat(rec.omni), tf, '#5CC8FF', 3.2, false);
+  polyline(ctx, rec.omni, tf, '#5CC8FF', 0, true);
+  // robot
+  const [rx,ry]=tf(0,0); robotTri(ctx, rx, ry, -Math.PI/2);
+}
+
+function drawWorldMap(rec){
+  const cv=$('wm'), ctx=cv.getContext('2d'), W=cv.width, H=cv.height, tf=wmTf();
+  ctx.clearRect(0,0,W,H);
+  // full route
+  if(S.meta.path) polyline(ctx, S.meta.path, tf, '#3A4557', 2, false);
+  // travelled so far (from poses up to cur)
+  const trav=[]; for(let k=0;k<=S.cur;k++) trav.push(S.recs[k].pose);
+  polyline(ctx, trav.map(p=>[p[0],p[1]]), tf, '#5BE3B3', 2.4, false);
+  // omni chunk in world
+  polyline(ctx, omniWorld(rec), tf, '#5CC8FF', 2.8, true);
+  // goal star at trip end
+  if(S.meta.goal_world){ const [gx,gy]=S.meta.goal_world; const [px,py]=tf(gx,gy); star(ctx,px,py,11,'#FF6B6B'); }
+  // robot marker + heading
+  const [x,y,yaw]=rec.pose; const [rx,ry]=tf(x,y);
+  const [hx,hy]=tf(x+Math.cos(yaw)*0.001, y+Math.sin(yaw)*0.001); // direction in canvas
+  robotTri(ctx, rx, ry, Math.atan2(hy-ry, hx-rx));
+  ctx.fillStyle='#E6EDF3';
+}
+
+let curURL=null;
+function drawCamera(rec){
+  const pane=$('camPane'), ph=$('camPh');
+  const f = rec.frame && S.files[rec.frame];
+  let img=pane.querySelector('img');
+  if(!f){ if(img) img.remove(); ph.classList.remove('hidden'); ph.textContent = rec.frame? ('frame not found:\n'+rec.frame) : 'no frames loaded'; return; }
+  ph.classList.add('hidden');
+  if(!img){ img=document.createElement('img'); pane.appendChild(img); }
+  if(curURL) URL.revokeObjectURL(curURL);
+  curURL=URL.createObjectURL(f); img.src=curURL;
+}
+
+/* ============================================================
+   RENDER / PLAYBACK
+   ============================================================ */
+function draw(){
+  const rec=S.recs[S.cur]; if(!rec) return;
+  drawCamera(rec); drawActionGrid(rec); drawWorldMap(rec);
+  const [gf,gl]=rec.goal_robot||[0,0];
+  $('goalTxt').textContent = (gl>0.1?'left':gl<-0.1?'right':'ahead');
+  $('fwdTxt').textContent = gf.toFixed(1)+' m';
+  $('tsChip').textContent = rec.ts? ('ts '+rec.ts) : ('#'+rec.i);
+  $('scrub').value=S.cur;
+  $('count').textContent = S.cur+' / '+(S.recs.length-1);
+}
+function play(){ if(S.cur>=S.recs.length-1) S.cur=0; S.playing=true; $('playBtn').textContent='❚❚';
+  clearInterval(S.timer); S.timer=setInterval(()=>{ if(S.cur>=S.recs.length-1){pause();return;} S.cur++; draw(); }, 200*S.speed); }
+function pause(){ S.playing=false; $('playBtn').textContent='▶'; clearInterval(S.timer); }
+function seek(i){ S.cur=Math.max(0,Math.min(S.recs.length-1,i)); draw(); }
+$('playBtn').onclick=()=>S.playing?pause():play();
+$('fwdBtn').onclick=()=>{pause();seek(S.cur+1);};
+$('backBtn').onclick=()=>{pause();seek(S.cur-1);};
+$('scrub').addEventListener('input',e=>{pause();seek(+e.target.value);});
+$('spd').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  S.speed=+b.dataset.s; $('spd').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); if(S.playing){pause();play();}
+});
+document.addEventListener('keydown',e=>{
+  if($('app').classList.contains('hidden')) return;
+  if(e.code==='Space'){e.preventDefault();S.playing?pause():play();}
+  else if(e.code==='ArrowRight'){e.preventDefault();pause();seek(S.cur+1);}
+  else if(e.code==='ArrowLeft'){e.preventDefault();pause();seek(S.cur-1);}
+});
+</script>
+</body>
+</html>
