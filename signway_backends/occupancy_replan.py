@@ -161,14 +161,51 @@ def refine(grid, wp, robot_radius=0.20, lookahead=2.5, n_out=8):
 
 
 def occupancy_from_depth(depth_m, K, cam_height, cam_pitch_deg=0.0,
-                         grid=None, floor_margin=0.10, ceil_margin=0.10):
-    """STUB for stage 2: metric depth map -> robot-frame occupancy Grid.
-    Back-project pixels with intrinsics K, drop floor/ceiling by height, bin the rest
-    into a top-down grid. Needs real K + camera height/pitch. Fill when you wire
-    Depth Anything V2 (metric indoor)."""
-    raise NotImplementedError(
-        "Wire Depth Anything V2 (metric) here: depth -> point cloud (via K) -> "
-        "drop floor/ceiling -> bin into Grid. Provide camera intrinsics + height/pitch.")
+                         grid=None, floor_margin=0.12, ceil_margin=0.20,
+                         max_range=4.0, min_range=0.15):
+    """Metric depth map -> robot-frame occupancy Grid.
+
+    Back-projects each pixel with intrinsics K into the camera frame, rotates by the camera
+    pitch, lifts by the camera height to get the point's height above the floor, keeps points
+    that are neither floor nor ceiling (i.e. obstacles), and bins their (forward, left) into a
+    top-down grid. In Habitat, K and cam_height are known exactly and depth is ground-truth, so
+    this is metrically clean (unlike the monocular real-robot case).
+
+    depth_m : (H,W) float depth along the optical axis, in metres.
+    K       : 3x3 pinhole intrinsics [[fx,0,cx],[0,fy,cy],[0,0,1]].
+    cam_height : camera height above the floor (m). cam_pitch_deg: down-tilt (+ = looking down).
+    """
+    depth_m = np.asarray(depth_m, float)
+    H, W = depth_m.shape
+    fx, fy = K[0, 0], K[1, 1]
+    cx, cy = K[0, 2], K[1, 2]
+    us, vs = np.meshgrid(np.arange(W), np.arange(H))
+    z = depth_m
+    valid = np.isfinite(z) & (z > min_range) & (z < max_range)
+    z = z[valid]
+    u = us[valid]
+    v = vs[valid]
+    # pinhole back-projection: camera frame X right, Y down, Z forward
+    xc = (u - cx) * z / fx
+    yc = (v - cy) * z / fy
+    zc = z
+    # apply camera pitch about the camera X axis (down-tilt +). Rotate (Y,Z).
+    p = np.deg2rad(cam_pitch_deg)
+    cp, sp = np.cos(p), np.sin(p)
+    y_r = cp * yc - sp * zc
+    z_r = sp * yc + cp * zc
+    # to robot frame: forward = Z, left = -X, height above floor = cam_height - Y_down
+    fwd = z_r
+    left = -xc
+    height = cam_height - y_r
+    obstacle = (height > floor_margin) & (height < cam_height + ceil_margin) & (fwd > min_range)
+    fwd, left = fwd[obstacle], left[obstacle]
+    g = grid if grid is not None else Grid(x_max=max_range, y_half=2.0, res=0.05)
+    rows = np.round(fwd / g.res).astype(int)
+    cols = np.round((left - g.y_min) / g.res).astype(int)
+    m = (rows >= 0) & (rows < g.nx) & (cols >= 0) & (cols < g.ny)
+    g.occ[rows[m], cols[m]] = True
+    return g
 
 
 # ── visualization ───────────────────────────────────────────────────────────────

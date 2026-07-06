@@ -77,7 +77,8 @@ class FSM:
             return Command(kind="stop", meta={"reason": "no_safe_path"})
         return Command(kind="waypoints",
                        waypoints=(wp if used else path),
-                       meta={"used_policy": bool(used)})
+                       meta={"used_policy": bool(used), "omni": wp,
+                             "refined": (None if used else path)})
 
     def _halt(self) -> Command:
         bb, cfg = self.bb, self.cfg
