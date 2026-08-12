@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-off: renamed timestamp-named bags to rosbag2-keller-t*, keeping .npz cache names in sync, used 2026-08-08, kept for provenance
 r"""
 rename_bags.py -- rename the timestamp-named bags on R2 to rosbag2-keller-t30, t31, ...
 and keep the local .npz cache filenames in sync.

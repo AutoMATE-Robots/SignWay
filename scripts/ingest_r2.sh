@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# one-off: pull one bag from R2 -> extract cache -> delete bag, so peak disk stays at one bag, used 2026-08-08, kept for provenance
 # ingest_r2.sh -- pull each bag from Cloudflare R2, extract its cache, delete the bag.
 #
 # Peak disk on MSI = ONE bag (~3 GB) + the growing cache dir (~2-4 GB for 100 bags).

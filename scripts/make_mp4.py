@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-off: one bag or cache -> mp4 for annotation review, used 2026-08-08, kept for provenance
 r"""
 make_mp4.py -- one ros2 bag (or one .npz cache) -> one mp4 for review/annotation.
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-off: built the annotation team's CSV sheet from the .npz caches, used 2026-08-08, kept for provenance
 r"""
 make_annotation_sheet.py -- build the sheet the annotation team fills in.
 

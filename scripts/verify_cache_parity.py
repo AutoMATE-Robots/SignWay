@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-off: proved the cached pipeline matches the bag pipeline on one real bag, used 2026-08-08 before caching all 100, kept for provenance
 r"""
 verify_cache_parity.py -- prove the cached pipeline produces EXACTLY what the
 current pipeline produces. Run this before caching all 100 bags.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-off: one-shot patch adding the SIGNWAY_FLIP_ZERO prompt option to tfds_builder.py, applied 2026-08-09, kept for provenance
 r"""
 patch_flip_zero.py -- add the SIGNWAY_FLIP_ZERO option to tfds_builder.py.
 

@@ -1,3 +1,4 @@
+# one-off: ad-hoc eval table across checkpoints; needs PYTHONPATH=tools:signway_dataset, used 2026-08-10, kept for provenance
 import sys, os
 sys.argv.append("--signway")
 import numpy as np

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-off: one-shot patch switching tfds_builder.py from ros2 bags to .npz caches, applied 2026-08-09, kept for provenance
 r"""
 patch_builder_for_cache.py -- switch tfds_builder.py from reading ros2 bags to
 reading the per-bag .npz caches, and let the BAGS list come from the annotation CSV.

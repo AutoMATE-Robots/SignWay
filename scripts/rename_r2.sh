@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# one-off: copy-verify-delete rename of the bags on Cloudflare R2, used 2026-08-08, kept for provenance
 # rename_r2.sh -- rename the timestamp-named bags on R2 to rosbag2-keller-t30, t31, ...
 #
 # SAFETY DESIGN (this is the important part):

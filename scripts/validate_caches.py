@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-off: post-ingest cache integrity check (truncation, silent poisoning), used 2026-08-08 before annotating, kept for provenance
 r"""
 validate_caches.py -- run AFTER ingest_r2.sh, BEFORE annotating or building.
 

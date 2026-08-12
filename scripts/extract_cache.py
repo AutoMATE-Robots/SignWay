@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-off: one ros2 bag -> compact .npz cache (~100x smaller), used 2026-08-08 during the R2 ingest, kept for provenance
 r"""
 extract_cache.py -- one ros2 bag -> one compact .npz cache.
 

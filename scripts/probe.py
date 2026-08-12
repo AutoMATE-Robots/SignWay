@@ -1,3 +1,4 @@
+# one-off: ad-hoc checkpoint probe over one bag; needs PYTHONPATH=tools:signway_dataset, used 2026-08-10, kept for provenance
 import sys, os
 sys.argv.append("--signway")
 import numpy as np
