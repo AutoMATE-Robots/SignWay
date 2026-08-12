@@ -28,6 +28,21 @@ whatever the current goal is. The slow model just moves the goalpost.
 
 ---
 
+## Repository layout
+
+Two stacks live here, and they are independent of each other:
+
+- **`adaptive_reasoning/`** — the paper's system: deadline-aware, evidence-accumulating sign
+  reasoning (`evidence/` → `gate/` → `reasoning/` → `memory/`). Start here.
+- **`c1_simulator/`, `c2_action/`, `c3_reasoning/`, `c4_safety/`, `c5_orchestrator/`, `common/`** —
+  the orchestration stack and simulator scaffolding it grew out of: the OmniVLA baseline and its
+  control law in `c2_action/`, the occupancy envelope and A\* replanner in `c4_safety/`, the FSM
+  in `c5_orchestrator/`, shared types and interfaces in `common/`. Exercised by `tests/`.
+- **`signway_dataset/` + `tools/`** — the data pipeline: ros2 bags → TFDS, evaluation, video.
+- **`scripts/`** — one-off utilities from the data ingest, kept for provenance.
+
+---
+
 ## The components
 
 Five pieces. Each one is a box with an input and an output. That's all you need to hold in
