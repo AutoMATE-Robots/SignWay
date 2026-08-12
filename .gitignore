@@ -1,0 +1,41 @@
+# --- secrets -------------------------------------------------------------
+.env
+.secrets
+
+# --- robot data: NEVER stage (103 GB) ------------------------------------
+ros2_bags/
+
+# --- local-only cleanup records ------------------------------------------
+_attic/
+CLEANUP_REPORT.md
+.claude/
+
+# --- python caches -------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# --- generated output ----------------------------------------------------
+*_out*/
+sim_out*/
+probe_out*/
+episode_check/
+dino_videos/
+videos/
+compare/
+signway_dataset/dataset_inspect/
+*.log
+
+# --- training / experiment artifacts (repo root only) --------------------
+/wandb/
+/eval_*/
+/deadline_labels/
+/features/
+/memory/
+
+# --- stale backup copies -------------------------------------------------
+*.py.v[0-9]
+*.py.prebag
+
+# --- git bundles ---------------------------------------------------------
+*.bundle
