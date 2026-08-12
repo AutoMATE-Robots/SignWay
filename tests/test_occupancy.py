@@ -5,8 +5,8 @@ safety backend detects a collision and reroutes around a partial obstacle.
 """
 import numpy as np
 
-from signway_backends import occupancy_replan as OR
-from signway_backends.safety_occupancy import SafetyOccupancy, grid_to_occupancy
+from c4_safety import occupancy_replan as OR
+from c4_safety.safety_occupancy import SafetyOccupancy, grid_to_occupancy
 
 
 # small pinhole: 90 deg HFOV, 160x120
@@ -32,7 +32,9 @@ def test_partial_wall_reroutes():
     assert g.occ.any()
     occ = grid_to_occupancy(g)
     safety = SafetyOccupancy()
-    straight = np.column_stack([np.linspace(0.1, 2.0, 8), np.zeros(8)])
+    # a chunk is (8,4): [dx, dy, hx, hy] — the last two are the policy's own heading
+    straight = np.column_stack([np.linspace(0.1, 2.0, 8), np.zeros(8),
+                                np.ones(8), np.zeros(8)])
     used, path = safety.refine(occ, straight)
     assert used is False                       # straight chunk hits the pillar
     assert path is not None                    # but a safe route around it exists
@@ -40,7 +42,9 @@ def test_partial_wall_reroutes():
 
 def test_no_occupancy_passes_through():
     safety = SafetyOccupancy()
-    straight = np.column_stack([np.linspace(0.1, 2.0, 8), np.zeros(8)])
+    # a chunk is (8,4): [dx, dy, hx, hy] — the last two are the policy's own heading
+    straight = np.column_stack([np.linspace(0.1, 2.0, 8), np.zeros(8),
+                                np.ones(8), np.zeros(8)])
     used, path = safety.refine(None, straight)
     assert used is True
-    assert path.shape == (8, 2)
+    assert path.shape == (8, 4)

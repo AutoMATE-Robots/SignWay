@@ -5,10 +5,11 @@ and recover when it clears, and HALT on a stall.
 """
 import numpy as np
 
-from signway_core.fsm import FSM
-from signway_core.config import Params
-from signway_core.types import FSMState, Observation, Pose
-from signway_backends.mocks import MockPolicy, MockSafety
+from c5_orchestrator.fsm import FSM
+from common.config import Params
+from common.types import FSMState, Observation, Pose
+from c2_action.mock_policy import MockPolicy
+from c4_safety.mock_safety import MockSafety
 
 
 def _obs(x, y, yaw=0.0, t=0.0):
@@ -21,7 +22,7 @@ def test_drive_emits_waypoints():
     cmd = fsm.tick(_obs(0, 0))
     assert fsm.bb.state == FSMState.DRIVE
     assert cmd.kind == "waypoints"
-    assert cmd.waypoints.shape == (8, 2)
+    assert cmd.waypoints.shape == (8, 4)   # [dx, dy, hx, hy]
     assert cmd.meta["used_policy"] is True
 
 

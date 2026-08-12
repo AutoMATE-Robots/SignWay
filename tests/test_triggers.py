@@ -1,9 +1,9 @@
 """Phase 1 trigger predicate tests."""
-from signway_core import triggers
-from signway_core.blackboard import Blackboard
-from signway_core.config import Params
-from signway_core.types import Pose, Subgoal
-from signway_backends.mocks import MockSafety
+from c5_orchestrator import triggers
+from c5_orchestrator.blackboard import Blackboard
+from common.config import Params
+from common.types import Pose, Subgoal
+from c4_safety.mock_safety import MockSafety
 
 
 def _bb(pose, subgoal=None):

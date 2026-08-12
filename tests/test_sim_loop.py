@@ -9,13 +9,13 @@ from pathlib import Path
 
 import numpy as np
 
-from signway_core.config import Params
-from signway_core.fsm import FSM
-from signway_core.geometry import wp_robot_to_world
-from signway_core.types import FSMState, Pose
-from signway_backends.mocks import MockPolicy
-from signway_backends.safety_occupancy import SafetyOccupancy
-from signway_sim.fake_bridge import FakeBridge
+from common.config import Params
+from c5_orchestrator.fsm import FSM
+from common.geometry import wp_robot_to_world
+from common.types import FSMState, Pose
+from c2_action.mock_policy import MockPolicy
+from c4_safety.safety_occupancy import SafetyOccupancy
+from c1_simulator.fake_bridge import FakeBridge
 
 
 def _drive(bridge, goal, max_steps=200, exec_steps=4):
@@ -54,7 +54,7 @@ def test_run_sim_cli_writes_valid_log(tmp_path):
     out = tmp_path / "sim_out"
     log = out / "run.jsonl"
     r = subprocess.run(
-        [sys.executable, "-m", "signway_sim.run_sim", "--bridge", "fake", "--policy", "mock",
+        [sys.executable, "-m", "c1_simulator.run_sim", "--bridge", "fake", "--policy", "mock",
          "--goal", "5", "0", "0", "--max-steps", "120", "--out", str(out), "--log", str(log)],
         cwd=str(Path(__file__).resolve().parents[1]), capture_output=True, text=True)
     assert r.returncode == 0, r.stderr

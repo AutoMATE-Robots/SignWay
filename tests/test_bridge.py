@@ -8,9 +8,9 @@ import time
 
 import numpy as np
 
-from signway_backends.omni_server import serve
-from signway_backends.omni_backend import make_backend
-from signway_backends.policy_omnivla import OmniVLAClient
+from c2_action.omni_server import serve
+from c2_action.omni_backend import make_backend
+from c2_action.policy_omnivla import OmniVLAClient
 
 
 def _bound_socket():
@@ -33,5 +33,5 @@ def test_bridge_roundtrip():
 
     imgs = [np.zeros((8, 8, 3), np.uint8), np.zeros((8, 8, 3), np.uint8)]
     wp = client.predict_waypoints(imgs, (3.0, 1.0, 0.3))   # goal leans left
-    assert wp.shape == (8, 2)
+    assert wp.shape == (8, 4)
     assert wp[-1, 1] > 0                                    # chunk leans left toward the goal
