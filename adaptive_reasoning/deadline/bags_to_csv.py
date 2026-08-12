@@ -8,7 +8,7 @@ loaded) and writes bag,split,flip_frame,decision,turn_done_frame,stride rows.
 
     python -m adaptive_reasoning.deadline.bags_to_csv \
         --builder ~/SignWay/signway_dataset/tfds_builder.py \
-        --out ~/SignWay/adaptive_reasoning/annotations_v8.csv
+        --out ~/SignWay/data/annotations_v8.csv
 """
 from __future__ import annotations
 

@@ -2,7 +2,7 @@
 """
 make_eval_report.py — aggregate a Pepper-VLA eval sweep into meeting-ready output.
 
-Reads:  <root>/eval_<ckpt>_<bag>/ dirs produced by eval_sweep.sbatch
+Reads:  <root>/eval_<ckpt>_<bag>/ dirs produced by jobs/eval_sweep.sbatch
 Writes: <root>/report/
     cmp_<bag>_lateral_cm.png        all checkpoints + ground truth, raw, shared ylim
     cmp_<bag>_lateral_cm_smooth.png same, disclosed rolling mean (labeled on plot)

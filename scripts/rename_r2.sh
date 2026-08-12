@@ -23,7 +23,7 @@
 set -uo pipefail
 
 REMOTE="${REMOTE:-r2:rosbags}"
-MAP="${MAP:-$HOME/SignWay/bag_rename_map.csv}"
+MAP="${MAP:-$HOME/SignWay/data/bag_rename_map.csv}"
 APPLY=0
 [ "${1:-}" = "--apply" ] && APPLY=1
 

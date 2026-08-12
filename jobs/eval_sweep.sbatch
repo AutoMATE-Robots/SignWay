@@ -15,7 +15,7 @@
 # Pepper-VLA eval sweep: v7@9k, v7@18k, v8@9k  x  frozen anchors (e1/e2/e3)
 #                        + training-reference bag (t1)
 # One GPU, fully sequential, unattended. Everything lands in one results dir.
-# Submit:  sbatch eval_sweep.sbatch
+# Submit:  sbatch jobs/eval_sweep.sbatch
 # ============================================================================
 
 set -uo pipefail   # NOT -e: one failed bag must not kill the whole sweep

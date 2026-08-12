@@ -30,16 +30,26 @@ whatever the current goal is. The slow model just moves the goalpost.
 
 ## Repository layout
 
-Two stacks live here, and they are independent of each other:
+```
+adaptive_reasoning/   THE reasoning system — the paper: evidence → gate → reasoning → memory
+deploy/               policy_server.py, pepper_vla_node.py        robot runtime
+jobs/                 eval_sweep.sbatch                            slurm
+data/                 annotations_v8.csv, bag_rename_map.csv       metadata, not bags
+docs/                 orchestration_spec.md + design docs
+signway_dataset/      tfds_builder, eval_openloop, reports
+tools/                bag_to_episode, viz, detectors
+scripts/              one-off pipeline utilities, headed with provenance
+tests/                the legacy suite (65 tests)
+config/               params.yaml — every threshold, one place
+c1..c5/, common/      legacy orchestration stack — import-coupled to tools/, left in place
+_attic/, ros2_bags/   gitignored
+```
 
-- **`adaptive_reasoning/`** — the paper's system: deadline-aware, evidence-accumulating sign
-  reasoning (`evidence/` → `gate/` → `reasoning/` → `memory/`). Start here.
-- **`c1_simulator/`, `c2_action/`, `c3_reasoning/`, `c4_safety/`, `c5_orchestrator/`, `common/`** —
-  the orchestration stack and simulator scaffolding it grew out of: the OmniVLA baseline and its
-  control law in `c2_action/`, the occupancy envelope and A\* replanner in `c4_safety/`, the FSM
-  in `c5_orchestrator/`, shared types and interfaces in `common/`. Exercised by `tests/`.
-- **`signway_dataset/` + `tools/`** — the data pipeline: ros2 bags → TFDS, evaluation, video.
-- **`scripts/`** — one-off utilities from the data ingest, kept for provenance.
+**`adaptive_reasoning/` is the one to read first.** It is independent of the `c*` stack: the
+`c1..c5/` + `common/` tree is the earlier orchestration system this grew out of — the OmniVLA
+baseline and its control law in `c2_action/`, the occupancy envelope and A\* replanner in
+`c4_safety/`, the FSM in `c5_orchestrator/` — kept because `tools/` still imports it and
+`tests/` still covers it.
 
 ---
 

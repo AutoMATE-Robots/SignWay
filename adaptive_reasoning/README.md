@@ -62,11 +62,11 @@ export GEMINI_API_KEY=...                    # L3 default reasoner
 # annotations: regenerate the CSV from the BAGS single-source-of-truth any time
 python -m adaptive_reasoning.deadline.bags_to_csv \
     --builder ~/SignWay/signway_dataset/tfds_builder.py \
-    --out adaptive_reasoning/annotations_v8.csv
+    --out data/annotations_v8.csv
 
 # 1. FREE deadline labels from odometry (compute node; loads all frames)
 python -m adaptive_reasoning.deadline.make_deadline_labels \
-    --annotations adaptive_reasoning/annotations_v8.csv \
+    --annotations data/annotations_v8.csv \
     --bag-root /users/1/munda057/SignWay/ros2_bags \
     --out $SCRATCH/deadline_labels
 # review any [FAIL onset] bags before proceeding

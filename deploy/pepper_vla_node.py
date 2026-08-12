@@ -16,7 +16,7 @@ SAFETY -- read before first run:
 
 Run:
     export POLICY_URL=http://<workstation-ip>:8000/predict
-    python3 pepper_vla_node.py --ros-args -p prompt:=turn_right -p max_speed:=0.15
+    python3 deploy/pepper_vla_node.py --ros-args -p prompt:=turn_right -p max_speed:=0.15
 """
 import base64
 import math

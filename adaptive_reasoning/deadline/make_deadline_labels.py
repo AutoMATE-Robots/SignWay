@@ -164,6 +164,57 @@ def label_frames(frame_times, odom, flip_frame, decision, turn_done_frame, d_max
 
 
 # --------------------------------------------------------------------------- #
+# lightweight bag reading: timestamps + odom, NO image decode
+# --------------------------------------------------------------------------- #
+def read_times_and_odom(bag_path, image_topic, odom_topic, ros_distro="humble"):
+    """Frame TIMESTAMPS + odom poses, without decoding a single image.
+
+    Deadline labels need only (frame_time, odom_pose). bag_to_episode.read_bag
+    decodes every frame to RGB -- a per-frame Python-loop YUV conversion holding
+    ~450 MB of arrays per bag, which OOM-kills a login node. This reads the same
+    messages and keeps only what the labels need.
+
+    Frame indices MUST match read_bag's exactly (annotations are read_bag
+    indices), so this mirrors its filter: read_bag appends a frame only when
+    _decode_image() succeeds -- supported encoding and a complete first row.
+    """
+    from pathlib import Path as _Path
+
+    from bag_to_episode import _make_typestore, _open_reader, yaw_from_quat
+
+    YUV = {"yuv422", "uyvy", "yuv422_yuy2", "yuyv"}
+    CH = {"rgb8": 3, "bgr8": 3, "mono8": 1, "rgba8": 4, "bgra8": 4}
+
+    typestore = _make_typestore(ros_distro)
+    times, odom = [], []
+    with _open_reader(_Path(bag_path), typestore) as reader:
+        conns = {c.topic: c for c in reader.connections}
+        for name, topic in (("image", image_topic), ("odom", odom_topic)):
+            if topic not in conns:
+                raise SystemExit(
+                    f"{name} topic '{topic}' not in bag; available: {sorted(conns)}")
+        for conn, ts, raw in reader.messages(
+                connections=[conns[image_topic], conns[odom_topic]]):
+            t = ts * 1e-9
+            msg = reader.deserialize(raw, conn.msgtype)
+            if conn.topic == image_topic:
+                enc = (getattr(msg, "encoding", "") or "").lower()
+                if enc not in YUV and enc not in CH:
+                    continue                     # read_bag would drop this frame
+                need = msg.width * (2 if enc in YUV else CH[enc])
+                if len(msg.data) < need:
+                    continue                     # incomplete first row
+                times.append(t)
+            else:
+                p_, q = msg.pose.pose.position, msg.pose.pose.orientation
+                odom.append((t, float(p_.x), float(p_.y),
+                             yaw_from_quat(q.x, q.y, q.z, q.w)))
+    times.sort()
+    odom.sort(key=lambda o: o[0])
+    return times, odom
+
+
+# --------------------------------------------------------------------------- #
 # CLI
 # --------------------------------------------------------------------------- #
 def read_annotations(path: Path):
@@ -192,7 +243,6 @@ def main():
     args = ap.parse_args()
 
     bootstrap()
-    from bag_to_episode import read_bag  # heavy import (rosbags) only in CLI path
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -211,13 +261,13 @@ def main():
         for a in anns:
             bag_path = Path(args.bag_root) / a["bag"]
             try:
-                frames, odom = read_bag(bag_path, args.image_topic,
-                                        args.odom_topic, args.ros_distro)
+                ftimes, odom = read_times_and_odom(
+                    bag_path, args.image_topic, args.odom_topic, args.ros_distro)
             except Exception as e:  # noqa: BLE001
                 print(f"[FAIL read] {a['bag']}: {type(e).__name__}: {e}")
                 n_fail += 1
                 continue
-            ft = np.array([t for t, _ in frames], dtype=float)
+            ft = np.array(ftimes, dtype=float)
             ot = np.array([o[0] for o in odom]); ox = np.array([o[1] for o in odom])
             oy = np.array([o[2] for o in odom]); oyw = np.array([o[3] for o in odom])
 

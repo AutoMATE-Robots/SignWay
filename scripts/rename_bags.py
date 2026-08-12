@@ -45,7 +45,7 @@ def main():
     ap.add_argument("--cache-dir", required=True)
     ap.add_argument("--start", type=int, default=30)
     ap.add_argument("--prefix", default="rosbag2-keller-t")
-    ap.add_argument("--map", default="bag_rename_map.csv")
+    ap.add_argument("--map", default="data/bag_rename_map.csv")
     ap.add_argument("--apply", action="store_true")
     a = ap.parse_args()
 
