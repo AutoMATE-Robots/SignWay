@@ -39,3 +39,29 @@ signway_dataset/dataset_inspect/
 
 # --- git bundles ---------------------------------------------------------
 *.bundle
+/replays/
+
+junction_memory/out/
+junction_memory/demo/
+junction_memory/*.csv
+junction_memory/*.mp4
+junction_memory/*.png
+# --- large generated media / scratch (kept local) ------------------------
+junction_memory/sign_frames/
+/figs/
+/occ_debug/
+/videos_t12_t29/
+/anim_e1/
+/anim_e1.*
+/_panel_tmp/
+/vlm_cache/
+*.mp4
+*.pptx
+*.tar.gz
+*.bak
+*.npz
+figure_panel_sweep.png
+
+# --- stale code copies ----------------------------------------------------
+/adaptive_reasoning_old_sep14/
+/adaptive_reasoning_other/

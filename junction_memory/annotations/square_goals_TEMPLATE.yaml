@@ -1,0 +1,6 @@
+# The ONLY hand-written input for the LIVE run: the mission goal schedule.
+# Not in the bag, not inferable from it -- it is what the robot was told to do.
+# Times are bag-relative seconds (t=0 at the first image message).
+goals:
+  - {from_s: 0.0,  goal: "goal_A"}     # replace with the real sign label/room
+  - {from_s: TODO, goal: "goal_E"}     # switch after the first turn at A

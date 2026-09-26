@@ -1,0 +1,8 @@
+# Out-and-back reverse traversal. Eastbound: sign read, 6-210 is <- -> turn left.
+# Southbound return to the same junction: 6-118 was ^ (east) at read time,
+# so from a southbound heading it must reproject to LEFT -- which is what the
+# robot actually did. No second call should be needed.
+goals:
+  - {from_s: 0.0,  goal: "6-210"}   # 6-201 to 6-225, <- : the turn at A
+  - {from_s: 23.4, goal: "6-118"}   # 6-115 to 6-189, ^ stored EAST
+                                     # southbound -> expect turn_LEFT from memory

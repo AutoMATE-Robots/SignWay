@@ -1,0 +1,22 @@
+# Annotations for rosbag2_2026_08_22-20_29_37 — fill the TODOs, then run the
+# fast loop (see RUNBOOK.md). Windows accept arm_s/decide_s (bag-relative
+# seconds) or arm_frame/decide_frame (/c1 image message index).
+bag: rosbag2_2026_08_22-20_29_37
+goals:
+  - {from_s: 0.0,  goal: goal_A}
+  - {from_s: TODO, goal: goal_E}      # switch after the first turn at A
+signs:
+  # first (northbound) approach to A — the one real VLM read
+  - arm_s: TODO
+    decide_s: TODO
+    decision: left
+    conf: 0.91
+    directory:                        # the WHOLE plate (README §2.1)
+      goal_A: left
+      goal_E: straight
+  # second approach — counterfactual only; suppressed when memory works
+  - arm_s: TODO
+    decide_s: TODO
+    decision: straight
+    conf: 0.90
+    directory: {goal_A: left, goal_E: straight}

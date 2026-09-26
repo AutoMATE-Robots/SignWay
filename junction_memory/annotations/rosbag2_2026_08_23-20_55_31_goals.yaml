@@ -1,0 +1,6 @@
+# Reverse-traversal demo. Northbound: sign read for 6-118 -> straight.
+# Southbound revisit of the same junction: memory must answer without a call.
+goals:
+  - {from_s: 0.0,  goal: "6-118"}   # 6-115 to 6-189, ^ -> straight (VLM, pass 1)
+  - {from_s: 36.9, goal: "6-210"}   # 6-201 to 6-225, stored WEST from that read
+                                     # southbound -> expect turn_RIGHT from memory

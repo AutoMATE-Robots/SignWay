@@ -33,7 +33,25 @@ for p in (os.path.expanduser("~/SignWay/tools"),
         sys.path.insert(0, p)
 
 from bag_to_episode import interp_odom, read_bag          # noqa: E402
-from tfds_builder import IMAGE_TOPIC, ODOM_TOPIC, ROS_DISTRO, _resize  # noqa: E402
+from tfds_builder import IMAGE_TOPIC, ODOM_TOPIC, ROS_DISTRO  # noqa: E402
+
+# ---------------------------------------------------------------------------
+# _resize is INLINED here, verbatim from the pre-cache builder
+# (_attic/2026-08/signway_dataset/tfds_builder.py.prebag lines 101-106).
+#
+# The builder became cache-first on 2026-08-09 and dropped this function, which
+# broke the import. Copying it here rather than re-importing keeps the extractor
+# self-contained AND guarantees new caches are byte-identical to the existing 96:
+# bilinear, clipped, cast to uint8. Do not "improve" this function.
+# ---------------------------------------------------------------------------
+import tensorflow as tf  # noqa: E402
+
+IMAGE_SIZE = (224, 224)
+
+
+def _resize(img: np.ndarray) -> np.ndarray:
+    out = tf.image.resize(img, IMAGE_SIZE, method="bilinear")
+    return tf.cast(tf.clip_by_value(out, 0, 255), tf.uint8).numpy()
 
 
 def main():

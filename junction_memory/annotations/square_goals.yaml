@@ -1,0 +1,5 @@
+# Mission for rosbag2_2026_08_22-20_29_37, chosen to match the driven route.
+# Plate at junction A reads:  ^ 6-115 to 6-189  |  <- 6-201 to 6-225 / UMSEC 6-202
+goals:
+  - {from_s: 0.0,  goal: "6-201 to 6-225"}    # left arrow -> matches the turn at A
+  - {from_s: 32.5, goal: "6-115 to 6-189"}    # up arrow   -> matches going straight through

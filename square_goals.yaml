@@ -1,0 +1,9 @@
+# mission goal schedule for the square loop (not in the bag; hand-written)
+# 6-220: reasoned once at the first junction (VLM call, plate directory stored)
+# 6-117: a DIFFERENT goal, resolved on the revisit from the stored directory -> straight, no call
+# from_s for 6-117 must fall AFTER the first VLM_ANSWER_LANDED and BEFORE the revisit approach:
+# run once, read <out>_memory/events.txt, then set it.
+goals:
+  - {from_s: 0.0,  goal: "6-210"}
+  - {from_s: 62.0, goal: "6-118"}
+  

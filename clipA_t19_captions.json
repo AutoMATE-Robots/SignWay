@@ -1,0 +1,6 @@
+[
+  {"from": 0,   "to": 90,  "text": "Goal: Elevators. No relevant sign yet \u2014 execute"},
+  {"from": 100, "to": 200, "text": "A goal-relevant sign is tracked but not readable \u2014 acquire, keep moving"},
+  {"from": 205, "to": 300, "text": "The sign names the goal and its arrow: decided directly, no VLM call"},
+  {"from": 305, "to": 420, "text": "Decision held as a standing prompt; the policy turns when the junction appears"}
+]

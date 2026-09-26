@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=pepper_eval_v7v8
+#SBATCH --job-name=pepper_eval_v11
 #SBATCH --account=gini
-#SBATCH --partition=interactive-gpu
-#SBATCH --gres=gpu:a40:1
+#SBATCH --partition=msigpu
+#SBATCH --gres=gpu:a100:1
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
@@ -53,11 +53,13 @@ echo "==============================="
 # !!! VERIFY THESE with `ls $SCRATCH/oft_ckpts_v7 $SCRATCH/oft_ckpts_v8` !!!
 # Dir names encode the recipe (b?, lr, lora-r) — if v7/v8 changed batch size
 # or anything else, the names below are wrong. Paste the real ones.
-CKPT_NAMES=( "v7_9000" "v7_18000" "v8_9000" )
+CKPT_NAMES=( "v11_3000" "v11_10000" "v11_20000" "v11_30000" "v10_6000" )
 CKPT_PATHS=(
-  "$SCRATCH/oft_ckpts_v7/openvla-7b+signway+b4+lr-0.0001+lora-r32+dropout-0.0--image_aug--9000_chkpt"
-  "$SCRATCH/oft_ckpts_v7/openvla-7b+signway+b4+lr-0.0001+lora-r32+dropout-0.0--image_aug--18000_chkpt"
-  "$SCRATCH/oft_ckpts_v8/openvla-7b+signway+b4+lr-0.0001+lora-r32+dropout-0.0--image_aug--9000_chkpt"
+  "$SCRATCH/oft_ckpts_v11/openvla-7b+signway+b4+lr-0.0001+lora-r32+dropout-0.0--image_aug--3000_chkpt"
+  "$SCRATCH/oft_ckpts_v11/openvla-7b+signway+b4+lr-0.0001+lora-r32+dropout-0.0--image_aug--10000_chkpt"
+  "$SCRATCH/oft_ckpts_v11/openvla-7b+signway+b4+lr-0.0001+lora-r32+dropout-0.0--image_aug--20000_chkpt"
+  "$SCRATCH/oft_ckpts_v11/openvla-7b+signway+b4+lr-0.0001+lora-r32+dropout-0.0--image_aug--30000_chkpt"
+  "$SCRATCH/oft_ckpts_v10/openvla-7b+signway+b4+lr-0.0001+lora-r32+dropout-0.0--image_aug--6000_chkpt"
 )
 
 # ---- bags: "name flip decision turn_done stride" ---------------------------

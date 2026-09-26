@@ -1,0 +1,21 @@
+image,goal,expected
+hsec-24_00s.png,Gender Neutral Restrooms,turn_left
+hsec-25_00s.png,Library Group Study 2-344,turn_right
+hsec-26_00s.png,Vending,straight
+hsec-27_00s.png,Elevator Access,turn_right
+keller-e1_00s.png,Vending Services,turn_left
+keller-t8_00s.png,Stairs,turn_left
+keller-t11_02s.png,3-180,turn_left
+keller-t24_00s.png,6-135,straight
+keller-t25_00s.png,6-202,straight
+keller-t27_first-frame.png,6-211,turn_left
+moos-14_02s.png,Elevators to Dental Clinics,turn_right
+pwb-19_01s.png,2-159,straight
+meche-5_07s.png,119,turn_right
+meche-3_07s.png,203,turn_left
+keller-e2_00s.png,Stairs,turn_right
+keller-t21_last.png,6-210,turn_left
+keller-t22_last-frame.png,Staff Elevators,straight
+keller-t29_6s_frame08.png,Stairs,turn_left
+rapson-8_first-frame.png,106,straight
+rapson-11_first-frame.png,23,turn_right

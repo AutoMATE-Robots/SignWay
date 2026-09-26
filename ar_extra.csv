@@ -1,0 +1,23 @@
+bag,approach_idx,building,floor,goal,sign_situation,sign_type,sign_text,sign_visible_frame,flip_frame,junction_frame,sign_exit_frame,decision,decision_grounded,temporary_present,occluded,semantic_only,notes,annotator,fps
+rosbag2-keller-t1,0,keller,5,5-182,directional,room_range,5-231 to 5-250 < | 5-201 to 5-217 > | 5-117 to 5-196 >,31,159,293,268,turn_right,1,0,0,0,,NN,20
+rosbag2-keller-t3,0,keller,5,Main Elevators,directional,floor_elevator,"Rooms 5-130 to 5-183 ^ | Rooms 5-101 to 5-129 > |  Main Elevators, Stairs > |  Restrooms >",0,150,332,201,turn_right,1,0,0,0,,NN,20
+rosbag2-keller-t2,0,keller,5,5-240,directional,room_range,5-231 to 5-250 < | 5-201 to 5-217 > | 5-117 to 5-196 >,0,153,297,270,turn_left,1,0,0,0,,NN,20
+rosbag2-keller-t4,0,keller,5,5-150,directional,room_range,"Rooms 5-130 to 5-183 ^ | Rooms 5-101 to 5-129 > | Main Elevators, Stairs > | Restrooms >",119,240,564,398,straight,1,0,0,0,,NN,20
+rosbag2-keller-t5,0,keller,5,5-160,directional,room_range,5-140 to 5-146 ^ | Staff Elevator ^ | Restrooms ^ | Stairs ^ | 5-147 to 5-196 < | 5-201 to 5-250 <,0,230,318,290,turn_left,1,0,0,0,,NN,20
+rosbag2-keller-t6,0,keller,5,Staff Elevator,directional,floor_elevator,5-140 to 5-146 ^ | Staff Elevator ^ | Restrooms ^ | Stairs ^ | 5-147 to 5-196 < | 5-201 to 5-250 <,0,280,491,472,straight,1,0,0,0,,NN,20
+rosbag2-keller-t7,0,keller,2,2-108,directional,room_range,2-224 to 2-260 ^ | Amundson Hall ^ | Classroom 2-260 ^ | 2-270 to 2-276 < | 2-101 to 2-129 < | Main Elevators < | Restrooms < | Stairs < | Vending Services < | 2-203 to 2-221 >,0,111,387,328,turn_left,1,1,0,0,,NN,20
+rosbag2-keller-t8,0,keller,2,2-210,directional,room_range,2-224 to 2-260 ^ | Amundson Hall ^ | Classroom 2-260 ^ | 2-270 to 2-276 < | 2-101 to 2-129 < | Main Elevators < | Restrooms < | Stairs < | Vending Services < | 2-203 to 2-221 >,0,114,344,313,turn_right,1,1,0,0,,NN,20
+rosbag2-keller-e1,0,keller,2,Elevators,directional,floor_elevator,2-111 to 2-140 < | Vending Services < | 2-221 to 2-260 > | Amundson Hall > | Elevators > | Restrooms > | Stairs >,0,190,426,390,turn_right,1,0,0,0,,NN,20
+rosbag2-keller-e2,0,keller,2,2-130,directional,room_range,2-111 to 2-140 < | Vending Services < | 2-221 to 2-260 > | Amundson Hall > | Elevators > | Restrooms > | Stairs >,0,190,365,332,turn_left,1,0,0,0,,NN,20
+rosbag2-keller-e3,0,keller,2,2-119,directional,room_range,2-111 to 2-140 ^ | Vending Services ^ | 2-145 to 2-188 < | 2-203 to 2-246 < | 2-270 to 2-276 < | Study Commons <,114,191,319,294,straight,1,0,0,0,,NN,20
+rosbag2-keller-t15,0,keller,2,2-150,directional,room_range,2-145 to 2-164 < | 2-170 to 2-175 > | 2-101 to 2-140 > | CSE Computer Labs 2-170 & 2-172 > | Elevators > | Restrooms > | Stairs > | Vending >,0,162,304,337,turn_left,1,1,0,0,,NN,30
+rosbag2-keller-t16,0,keller,2,Restrooms,directional,floor_elevator,2-145 to 2-164 < | 2-170 to 2-175 > | 2-101 to 2-140 > | CSE Computer Labs 2-170 & 2-172 > | Elevators > | Restrooms > | Stairs > | Vending >,0,160,336,342,turn_right,1,1,0,0,,NN,30
+rosbag2-keller-t17,0,keller,2,Study Commons,directional,building_wing,2-170 to 2-175 ^ | 2-101 to 2-149 ^ | Main Elevators ^ | Restrooms ^ | Stairs ^ | Vending Services ^ | 2-178 to 2-188 > | 2-203 to 2-276 > | Amundson Hall > | Study Commons >,0,40,228,285,turn_right,1,1,0,0,,NN,30
+rosbag2-keller-t18,0,keller,2,Main Elevators,directional,floor_elevator,2-170 to 2-175 ^ | 2-101 to 2-149 ^ | Main Elevators ^ | Restrooms ^ | Stairs ^ | Vending Services ^ | 2-178 to 2-188 > | 2-203 to 2-276 > | Amundson Hall > | Study Commons >,0,10,223,202,straight,1,1,0,0,,NN,30
+rosbag2-keller-t19,0,keller,2,Elevators,directional,room_single,Elevators < | General Purpose Classroom 2-260 <,0,110,312,342,turn_left,1,0,0,0,,NN,30
+rosbag2-square,0,keller,6,6-210,directional,room_range,"6-115 to 6-189 ^ | 6-201 to 6-225 < | UMSEC 6-202 <",0,273,677,618,turn_left,1,0,0,0,junction memory revisit,NN,30
+rosbag2-square,1,keller,6,6-118,directional,room_range,"6-115 to 6-189 ^ | 6-201 to 6-225 < | UMSEC 6-202 <",3941,4347,4679,4631,straight,1,0,0,0,junction memory revisit,NN,30
+rosbag2_2026_08_23-20_55_31,0,keller,6,6-210,directional,room_range,"6-115 to 6-189 ^ | 6-201 to 6-225 < | UMSEC 6-202 <",237,583,876,829,turn_left,1,0,0,0,reverse traversal revisit,NN,30
+rosbag2_2026_08_23-20_55_31,0,keller,6,6-118,directional,room_range,"6-115 to 6-189 ^ | 6-201 to 6-225 < | UMSEC 6-202 <",237,583,876,829,straight,1,0,0,0,reverse traversal revisit,NN,30
+rosbag2_2026_08_23-20_58_58,0,keller,6,6-210,directional,room_range,"6-115 to 6-189 ^ | 6-201 to 6-225 < | UMSEC 6-202 <",0,4,414,357,turn_left,1,0,0,0,reverse traversal revisit,NN,30
+rosbag2-square,0,keller,6,6-220,directional,room_range,NONE,0,0,0,0,straight,0,0,0,0,memory clip,NN,30

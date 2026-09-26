@@ -1,0 +1,28 @@
+# Offline path only (replay_ar_memory.py). No docTR, no VLM, no API key.
+# The gate is annotation-driven: arm_s/decide_s stand in for "evidence
+# accumulating" and "sufficiency reached". Read them off dump_sign_frames:
+#   arm_s     ~ time at the flip frame (text becomes readable, ~10 m out)
+#   decide_s  ~ a second or two later, still before arrival at A
+bag: rosbag2_square
+goals:
+  - {from_s: 0.0,  goal: "6-210"}      # room in the LEFT range
+  - {from_s: 32.5, goal: "6-118"}      # room in the STRAIGHT range
+signs:
+  # first (northbound) approach to A
+  - arm_s: TODO
+    decide_s: TODO
+    decision: left
+    conf: 0.91
+    directory:                          # the plate, as printed
+      "6-115 to 6-189": straight
+      "6-201 to 6-225": left
+      "UMSEC 6-202": left
+  # second approach — counterfactual only; suppressed when memory works
+  - arm_s: TODO
+    decide_s: TODO
+    decision: straight
+    conf: 0.90
+    directory:
+      "6-115 to 6-189": straight
+      "6-201 to 6-225": left
+      "UMSEC 6-202": left
